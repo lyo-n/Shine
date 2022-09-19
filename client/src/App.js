@@ -2,74 +2,21 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import {Table} from 'antd';
 import {fetchItems} from './api/itemAPI';
-import axios from './api/index';
 
 
 function App () {
   const [items, setItems] = React.useState();
-  // console.log("🚀 ~ file: App.js ~ line 10 ~ App ~ items", items)
-
-
+    
 
   React.useEffect(() => {
     fetchItems().then(data => {
-      // return setItems(data)
-   
-    const rows = data.map(item => ({
-      ad_name: item.ad_name,
-      total_revs: item.total_revs,
-      total_spend: item.total_spend,
-      total_profit: item.total_profit,
-      total_sessions: item.total_sessions,
-      total_paid_clicks: item.total_paid_clicks,
-      total_page_views: item.total_page_views,
-      cpc:  item.cpc,
-      roas:  item.roas,
-      image_url:  item.image_url,
-      status:  item.status,
-      key: item.id
-    }))
-  console.log("🚀 ~ file: App.js ~ line 60 ~ rows ~ rows", rows)
-  setItems(rows)
+      const arr_data = data.map(item => ({
+        ...item,
+        key: item._id})
+      )
+      return setItems(arr_data)
 })
 }, [])
-
-
-  // const data = [
-  //   {
-  //     ad_name: items[0].ad_name,
-  //     age: 22,
-  //     adress: 'adress 1',
-  //     key: '1'
-  //   },
-  //   {
-  //     ad_name: items[1].ad_name,
-  //     age: 22,
-  //     adress: 'adress 1',
-  //     key: '1'
-  //   },
-  //   {
-  //     name: 'Name 1',
-  //     age: 22,
-  //     adress: 'adress 1',
-  //     key: '1'
-  //   },
-  //   {
-  //     name: 'Name 2',
-  //     age: 23,
-  //     adress: 'adress 2',
-  //     key: '2'
-  //   },
-  //   {
-  //     name: 'Name 1',
-  //     age: 24,
-  //     adress: 'adress 2',
-  //     key: '3'
-  //   }
-  // ]
-
-
-
   const columns = [
     {
       title: 'ad_name',
@@ -127,10 +74,17 @@ function App () {
       key: 'key'
     },
     {
-      title: 'Graduated',
+      title: 'Discrepancy, %',
       key: 'key',
       render: payload => {
-        return <p>{payload.age<23?'true':'false'}</p>
+        return <p>{payload.total_sessions/payload.total_paid_clicks*100}</p>
+      }
+    },
+    {
+      title: 'PRPM',
+      key: 'key',
+      render: payload => {
+        return <p>{1000*payload.total_revs/payload.total_page_views}</p>
       }
     }
   ]
@@ -138,7 +92,7 @@ function App () {
   return (
     <div>
         <Table
-        dataSource={[]}
+        dataSource={items}
         columns={columns}
         >
 
