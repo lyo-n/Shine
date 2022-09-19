@@ -21,8 +21,22 @@ class AggDailyController {
     async getAll (req, res, next) {
         try {
             let items;
+                items = await AggDailyModel.find()
+                return res.json(items)
+        } catch (e) {
+            console.log(e)
+            next(e.message)
+        }
+    }
+
+    async getAllRevs (req, res, next) {
+        try {
+            let items;
             items = await AggDailyModel.find()
-            return res.json(items)
+                let items2 = items.filter(item => 
+                    item.total_revs > 10
+                )
+                return res.json(items2)
         } catch (e) {
             console.log(e)
             next(e.message)

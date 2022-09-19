@@ -1,11 +1,12 @@
 import React from 'react';
 import 'antd/dist/antd.css';
-import {Table} from 'antd';
-import {fetchItems} from './api/itemAPI';
+import {Table, Button} from 'antd';
+import {fetchItems, fetchItemsFilter} from './api/itemAPI';
 
 
 function App () {
   const [items, setItems] = React.useState();
+  const [isTrue, setButtonClick] = React.useState(1);
     
 
   React.useEffect(() => {
@@ -17,16 +18,40 @@ function App () {
       return setItems(arr_data)
 })
 }, [])
+
+function handleClick() {
+  setButtonClick(isTrue+1)
+  if(isTrue % 2){
+  fetchItemsFilter().then(data => {
+    const arr_data = data.map(item => ({
+      ...item,
+      key: item._id})
+    )
+    return setItems(arr_data)
+})
+  } else {
+    fetchItems().then(data => {
+      const arr_data = data.map(item => ({
+        ...item,
+        key: item._id})
+      )
+      return setItems(arr_data)
+})
+  }
+}
+
+
   const columns = [
     {
       title: 'ad_name',
       dataIndex: 'ad_name',
-      key: 'key'
+      key: 'key',
     },
     {
       title: 'total_revs',
       dataIndex: 'total_revs',
-      key: 'key'
+      key: 'key',
+      sorter: (a, b) => a.total_revs - b.total_revs
     },
     {
       title: 'total_spend',
@@ -66,7 +91,7 @@ function App () {
     {
       title: 'image_url',
       dataIndex: 'image_url',
-      key: 'key'
+      key: 'key',
     },
     {
       title: 'status',
@@ -77,23 +102,30 @@ function App () {
       title: 'Discrepancy, %',
       key: 'key',
       render: payload => {
-        return <p>{payload.total_sessions/payload.total_paid_clicks*100}</p>
-      }
+        return <p>{(payload.total_sessions/payload.total_paid_clicks*100).toFixed(2)}</p>
+      },
     },
     {
       title: 'PRPM',
       key: 'key',
       render: payload => {
-        return <p>{1000*payload.total_revs/payload.total_page_views}</p>
+        return <p>{(1000*payload.total_revs/payload.total_page_views).toFixed(3)}</p>
       }
     }
   ]
 
   return (
     <div>
+        <Button 
+          style={{margin: 15}} 
+          type="primary"
+          onClick={handleClick}
+        >
+          {isTrue % 2 ? `Filter by "total_revs > 10"` : `All daily`}
+        </Button>
         <Table
-        dataSource={items}
-        columns={columns}
+          dataSource={items}
+          columns={columns}
         >
 
         </Table>
