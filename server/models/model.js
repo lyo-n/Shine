@@ -14,6 +14,7 @@ const AggDaily = new Schema(
         image_url: { type: String},
         status: { type: String}
     },
-    { timestamps: true },
+    { collection: 'agg_daily' }
+    // { timestamps: true },
 )
 module.exports = model('agg_daily', AggDaily)
