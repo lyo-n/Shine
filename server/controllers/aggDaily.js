@@ -34,7 +34,7 @@ class AggDailyController {
             let items;
             items = await AggDailyModel.find()
                 let items2 = items.filter(item => 
-                    item.total_revs > 10
+                    item.total_revs > 40
                 )
                 return res.json(items2)
         } catch (e) {

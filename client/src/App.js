@@ -121,7 +121,7 @@ function handleClick() {
           type="primary"
           onClick={handleClick}
         >
-          {isTrue % 2 ? `Filter by "total_revs > 10"` : `All daily`}
+          {isTrue % 2 ? `Filter by "total_revs > 40"` : `All daily`}
         </Button>
         <Table
           dataSource={items}
